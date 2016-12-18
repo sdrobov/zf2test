@@ -11,8 +11,11 @@ namespace Application;
 
 use Application\Model\File;
 use Application\Model\FileTable;
+use Zend\Http\Request as HttpRequest;
+use Zend\Http\Response as HttpResponse;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Mvc\ApplicationInterface;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 
@@ -20,6 +23,37 @@ class Module
 {
     public function onBootstrap(MvcEvent $e)
     {
+        /** @var ApplicationInterface $application */
+        $application = $e->getTarget();
+        $sm = $application->getServiceManager();
+        $application->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, function () use ($e, $sm) {
+            $request  = $e->getRequest();
+            $response = $e->getResponse();
+
+            if (!($request instanceof HttpRequest && $response instanceof HttpResponse)) {
+                return;
+            }
+
+            /* @var $authAdapter \Zend\Authentication\Adapter\Http */
+            $authAdapter = $sm->get('Application\AuthenticationAdapter');
+
+            $authAdapter->setRequest($request);
+            $authAdapter->setResponse($response);
+
+            $result = $authAdapter->authenticate();
+
+            if ($result->isValid()) {
+                return;
+            }
+
+            $response->setContent('Access denied');
+            $response->setStatusCode(HttpResponse::STATUS_CODE_401);
+
+            $e->setResult($response);
+
+            return false;
+        });
+
         $eventManager = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);

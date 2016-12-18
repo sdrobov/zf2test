@@ -1,0 +1,8 @@
+<?php if (isset($password)): ?>
+    <h3>File you are trying to download is protected with password!</h3>
+    <form>
+        <label for="passwd">Enter password:</label>
+        <input type="password" name="passwd" id="passwd" class="form-control">
+        <input type="submit" class="btn btn-primary">
+    </form>
+<?php endif; ?>

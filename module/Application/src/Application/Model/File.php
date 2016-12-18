@@ -2,6 +2,7 @@
 
 namespace Application\Model;
 
+use Zend\Db\Sql\Ddl\Column\Date;
 use Zend\Db\TableGateway\TableGateway;
 
 class File
@@ -59,8 +60,20 @@ class File
         $this->link = !empty($data['link']) ? $data['link'] : null;
         $this->password = !empty($data['password']) ? $data['password'] : null;
         $this->downloads = !empty($data['downloads']) ? $data['downloads'] : null;
-        $this->createdAt = !empty($data['created_at']) ? new \DateTime($data['created_at']) : null;
-        $this->deletedAt = !empty($data['deleted_at']) ? new \DateTime($data['deleted_at']) : null;
+
+        if (!empty($data['created_at'])) {
+            $this->createdAt = new \DateTime();
+            $this->createdAt->setTimestamp($data['created_at']);
+        } else {
+            $this->createdAt = null;
+        }
+
+        if (!empty($data['deleted_at'])) {
+            $this->deletedAt = new \DateTime();
+            $this->deletedAt->setTimestamp($data['deleted_at']);
+        } else {
+            $this->deletedAt = null;
+        }
     }
 
     /**

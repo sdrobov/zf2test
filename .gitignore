@@ -1,4 +1,6 @@
 nbproject
+upload
+!upload/.gitkeep
 ._*
 .vagrant
 .~lock.*
