@@ -3,7 +3,6 @@
 namespace Application\Controller;
 
 use Application\Model\FileTable;
-use Zend\Http\PhpEnvironment\Request;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
