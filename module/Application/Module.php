@@ -34,6 +34,10 @@ class Module
                 return;
             }
 
+            if (strpos($request->getUriString(), '/admin') === false) {
+                return;
+            }
+
             /* @var $authAdapter \Zend\Authentication\Adapter\Http */
             $authAdapter = $sm->get('Application\AuthenticationAdapter');
 
